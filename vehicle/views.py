@@ -78,11 +78,6 @@ def video_feed(request):
                 cv2.waitKey(30)
                 continue  # skip loop until detection is active
 
-            if reset_requested:
-                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # rewind video
-                frame_id = 0
-                reset_requested = False
-
             ret, frame = cap.read()
             if not ret:
                 break
@@ -132,7 +127,7 @@ def video_feed(request):
 def start_detection(request):
     global detection_active
     detection_active = True
-    print("=== START DETECTION CALLED ===")  # <--- Add this line
+    print("=== START DETECTION CALLED ===")  
     return JsonResponse({'status': 'started'})
 
 
@@ -144,9 +139,8 @@ def stop_detection(request):
 
 @csrf_exempt
 def reset_detection(request):
-    global detection_active, tracker, vehicle_count, reset_requested
+    global detection_active, tracker, vehicle_count
     detection_active = True
     vehicle_count = 0
     tracker = CentroidTracker()
-    reset_requested = True
     return JsonResponse({'status': 'reset'})
